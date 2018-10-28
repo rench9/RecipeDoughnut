@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="recipe"
+            type="com.r4hu7.recipedoughnut.data.remote.response.model.Recipe" />
+
+        <variable
+            name="drawableId"
+            type="int" />
+
+        <variable
+            name="imageOnLeft"
+            type="boolean" />
+
+        <variable
+            name="navigator"
+            type="java.lang.ref.WeakReference&lt;com.r4hu7.recipedoughnut.util.RecipeNavigator&gt;" />
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg"
+        android:onClick="@{()->navigator!=null?navigator.get().showRecipe(recipe.id):null}">
+
+        <LinearLayout
+            android:layout_width="@dimen/unit0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unit2"
+            android:layout_marginEnd="@dimen/unit2"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ivResR"
+            app:layout_constraintStart_toEndOf="@id/ivResL"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                style="@style/typography_title_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{recipe.name}" />
+
+            <TextView
+                style="@style/typography_subheading_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{recipe.ingredients.isEmpty()?`Ingredients not availabe`: recipe.ingredients.size()+` Ingredients`}"
+                android:textColor="@color/shade5" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="@dimen/unit2"
+                android:layout_marginBottom="@dimen/unit2"
+                android:alpha="0.5"
+                android:background="@color/shade0" />
+
+            <TextView
+                style="@style/typography_caption_bold_light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{`Perfect serving for `+recipe.servings}" />
+
+        </LinearLayout>
+
+        <com.r4hu7.recipedoughnut.ui.view.SquareImageView
+            android:id="@+id/ivResL"
+            setThumbnail="@{imageOnLeft?drawableId:-1}"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.r4hu7.recipedoughnut.ui.view.SquareImageView
+            android:id="@+id/ivResR"
+            setThumbnail="@{imageOnLeft?-1:drawableId}"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+</layout>

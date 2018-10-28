@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="recipe"
+            type="com.r4hu7.recipedoughnut.data.remote.response.model.Recipe" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:context=".ui.fragment.RecipeFragment">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvIngredientsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:orientation="horizontal"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvStepsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:orientation="vertical"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+        </LinearLayout>
+    </ScrollView>
+</layout>
