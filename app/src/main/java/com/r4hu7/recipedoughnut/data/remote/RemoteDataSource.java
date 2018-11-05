@@ -2,12 +2,14 @@ package com.r4hu7.recipedoughnut.data.remote;
 
 import android.support.annotation.NonNull;
 
+import com.r4hu7.recipedoughnut.data.LoadItemCallback;
 import com.r4hu7.recipedoughnut.data.remote.response.model.Recipe;
 
 import java.util.List;
 
-import io.reactivex.Maybe;
+import io.reactivex.MaybeObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class RemoteDataSource {
@@ -24,8 +26,28 @@ public class RemoteDataSource {
         return INSTANCE;
     }
 
-    public Maybe<List<Recipe>> getRecipes() {
-        return endpoints.getRecipes().observeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    public void getRecipes(LoadItemCallback<List<Recipe>> loadItemCallback) {
+        endpoints.getRecipes().observeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new MaybeObserver<List<Recipe>>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onSuccess(List<Recipe> recipes) {
+                loadItemCallback.onItemLoaded(recipes);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                loadItemCallback.onDataNotAvailable(e);
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
     }
 
 }

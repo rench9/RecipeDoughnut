@@ -8,8 +8,6 @@ import com.r4hu7.recipedoughnut.data.remote.response.model.Recipe;
 
 import java.util.List;
 
-import io.reactivex.Maybe;
-
 public class RecipeRepository {
     private static RecipeRepository INSTANCE;
     private LocalDataSource localDataSource;
@@ -26,8 +24,12 @@ public class RecipeRepository {
         return INSTANCE;
     }
 
-    public Maybe<List<Recipe>> getRecipes() {
-        return remoteDataSource.getRecipes();
+    public void getRecipes(LoadItemCallback<List<Recipe>> loadItemCallback) {
+        remoteDataSource.getRecipes(loadItemCallback);
+    }
+
+    public void getRecipesMaybe(LoadItemCallback<List<Recipe>> loadItemCallback) {
+        localDataSource.getRecipes(loadItemCallback);
     }
 
     public void getRecipe(int recipeId, LoadItemCallback<Recipe> loadItemCallback) {

@@ -52,4 +52,12 @@ public class Step {
         this.thumbnailURL = thumbnailURL;
     }
 
+    public boolean haveVideo() {
+        return videoURL != null && !videoURL.isEmpty();
+    }
+
+    public boolean haveThumbnail() {
+        return thumbnailURL != null && !thumbnailURL.isEmpty();
+    }
+
 }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="step"
+            type="com.r4hu7.recipedoughnut.data.remote.response.model.Step" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/pvPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="@{step.haveVideo? View.VISIBLE: View.GONE}"
+            app:resize_mode="fit" />
+
+        <ImageView
+            setThumbnailImage="@{step.thumbnailURL}"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:visibility="@{step.haveThumbnail? View.VISIBLE: View.GONE}" />
+
+        <TextView
+            style="@style/typography_body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{step.description}" />
+    </LinearLayout>
+
+</layout>

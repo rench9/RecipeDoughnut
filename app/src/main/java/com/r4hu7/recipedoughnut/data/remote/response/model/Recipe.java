@@ -11,7 +11,7 @@ import java.util.ArrayList;
 @TypeConverters(RecipeTypeConverter.class)
 @Entity(tableName = Recipe.TABLE_NAME)
 public class Recipe {
-    static final String TABLE_NAME = "_recipe";
+    public static final String TABLE_NAME = "_recipe";
     @PrimaryKey
     private int id;
 

@@ -1,6 +1,7 @@
 package com.r4hu7.recipedoughnut.ui.adapter;
 
 import android.databinding.DataBindingUtil;
+import android.databinding.ObservableList;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,21 +14,40 @@ import com.r4hu7.recipedoughnut.databinding.AdapterRecipeCardBinding;
 import com.r4hu7.recipedoughnut.util.RecipeNavigator;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
-    private List<Recipe> recipes;
+    private ObservableList<Recipe> recipes;
     private RecipeNavigator recipeNavigator;
 
-    public RecipeAdapter(ArrayList<Recipe> recipes, RecipeNavigator recipeNavigator) {
+    public RecipeAdapter(ObservableList<Recipe> recipes, RecipeNavigator recipeNavigator) {
         this.recipes = recipes;
         this.recipeNavigator = recipeNavigator;
-    }
+        this.recipes.addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<Recipe>>() {
+            @Override
+            public void onChanged(ObservableList<Recipe> sender) {
+                notifyDataSetChanged();
+            }
 
-    public void setRecipes(List<Recipe> recipes) {
-        this.recipes = recipes;
-        notifyDataSetChanged();
+            @Override
+            public void onItemRangeChanged(ObservableList<Recipe> sender, int positionStart, int itemCount) {
+                notifyItemRangeChanged(positionStart, itemCount);
+            }
+
+            @Override
+            public void onItemRangeInserted(ObservableList<Recipe> sender, int positionStart, int itemCount) {
+                notifyItemRangeInserted(positionStart, itemCount);
+            }
+
+            @Override
+            public void onItemRangeMoved(ObservableList<Recipe> sender, int fromPosition, int toPosition, int itemCount) {
+
+            }
+
+            @Override
+            public void onItemRangeRemoved(ObservableList<Recipe> sender, int positionStart, int itemCount) {
+
+            }
+        });
     }
 
     @NonNull

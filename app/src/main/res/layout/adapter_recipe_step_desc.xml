@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="step"
+            type="com.r4hu7.recipedoughnut.data.remote.response.model.Step" />
+
+        <variable
+            name="navigator"
+            type="java.lang.ref.WeakReference&lt;com.r4hu7.recipedoughnut.util.StepsNavigator&gt;" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unit18"
+        android:layout_marginStart="@dimen/unit4"
+        android:layout_marginEnd="@dimen/unit4"
+        android:gravity="center"
+        android:onClick="@{() -> navigator!=null&amp;&amp;navigator.get()!=null?navigator.get().showStep(step.id):null}"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/typography_body2"
+            android:layout_width="@dimen/unit0"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@{step.shortDescription}" />
+
+        <com.r4hu7.recipedoughnut.ui.view.SquareImageView
+            android:layout_width="32dp"
+            android:layout_height="@dimen/unit0"
+            android:layout_marginStart="@dimen/unit4"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/play_button"
+            android:tint="@color/shade8"
+            android:visibility="@{step.haveVideo()?View.VISIBLE:View.GONE}" />
+    </LinearLayout>
+</layout>

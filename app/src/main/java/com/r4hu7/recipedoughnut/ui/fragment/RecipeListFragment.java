@@ -1,24 +1,22 @@
 package com.r4hu7.recipedoughnut.ui.fragment;
 
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.databinding.ObservableArrayList;
-import android.databinding.ObservableList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.r4hu7.recipedoughnut.R;
 import com.r4hu7.recipedoughnut.data.RecipeRepository;
-import com.r4hu7.recipedoughnut.data.remote.response.model.Recipe;
 import com.r4hu7.recipedoughnut.databinding.FragmentRecipeListBinding;
 import com.r4hu7.recipedoughnut.di.component.DaggerRepositoryComponent;
 import com.r4hu7.recipedoughnut.di.module.ContextModule;
@@ -28,12 +26,8 @@ import com.r4hu7.recipedoughnut.ui.vm.RecipeListViewModel;
 import com.r4hu7.recipedoughnut.util.RecipeNavigator;
 import com.r4hu7.recipedoughnut.util.RecyclerViewItemDecorator;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.MaybeObserver;
-import io.reactivex.disposables.Disposable;
 
 public class RecipeListFragment extends Fragment implements RecipeNavigator {
 
@@ -42,6 +36,7 @@ public class RecipeListFragment extends Fragment implements RecipeNavigator {
     private RecipeAdapter adapter;
     private RecyclerViewItemDecorator itemDecorator;
 
+    private RecipeRepository repository;
     @BindView(R.id.rvContainer)
     RecyclerView rvContainer;
 
@@ -60,72 +55,37 @@ public class RecipeListFragment extends Fragment implements RecipeNavigator {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(RecipeListViewModel.class);
+
+        if (repository == null)
+            repository = DaggerRepositoryComponent.builder().contextModule(new ContextModule(getContext())).build().getRecipeRepository();
+
+        mViewModel = ViewModelProviders.of(this, new ViewModelProvider.NewInstanceFactory() {
+            @NonNull
+            @Override
+            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                return (T) new RecipeListViewModel(repository);
+            }
+        }).get(RecipeListViewModel.class);
         initRecyclerView();
     }
 
     private void initRecyclerView() {
         if (adapter == null)
-            adapter = new RecipeAdapter(new ObservableArrayList<>(), RecipeListFragment.this);
-        if (itemDecorator == null)
-            itemDecorator = new RecyclerViewItemDecorator(false, OrientationHelper.VERTICAL, false, 48);
-        mViewModel.getRecipes().addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<Recipe>>() {
-            @Override
-            public void onChanged(ObservableList<Recipe> sender) {
-            }
-
-            @Override
-            public void onItemRangeChanged(ObservableList<Recipe> sender, int positionStart, int itemCount) {
-
-            }
-
-            @Override
-            public void onItemRangeInserted(ObservableList<Recipe> sender, int positionStart, int itemCount) {
-                adapter.setRecipes(sender.subList(0, sender.size()));
-            }
-
-            @Override
-            public void onItemRangeMoved(ObservableList<Recipe> sender, int fromPosition, int toPosition, int itemCount) {
-
-            }
-
-            @Override
-            public void onItemRangeRemoved(ObservableList<Recipe> sender, int positionStart, int itemCount) {
-
-            }
-        });
+            adapter = new RecipeAdapter(mViewModel.getRecipes(), RecipeListFragment.this);
+        if (itemDecorator == null) {
+            if (rvContainer.getTag().equals(getResources().getString(R.string.tablet)))
+                itemDecorator = new RecyclerViewItemDecorator(true, OrientationHelper.VERTICAL, true, 3, 68);
+            else if (rvContainer.getTag().equals(getResources().getString(R.string.phone_land)))
+                itemDecorator = new RecyclerViewItemDecorator(true, OrientationHelper.VERTICAL, true, 3, 48);
+            else
+                itemDecorator = new RecyclerViewItemDecorator(false, OrientationHelper.VERTICAL, false, 48);
+        }
         rvContainer.setAdapter(adapter);
         rvContainer.addItemDecoration(itemDecorator);
-        RecipeRepository repository = DaggerRepositoryComponent.builder().contextModule(new ContextModule(getContext())).build().getRecipeRepository();
-
-        repository.getRecipes().subscribe(new MaybeObserver<List<Recipe>>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onSuccess(List<Recipe> recipes) {
-                mViewModel.setRecipes(recipes);
-                repository.saveRecipes(recipes.toArray(new Recipe[0]));
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
     }
 
     @Override
     public void showRecipe(int recipeId) {
-
-        Log.e("ID", String.valueOf(recipeId));
         Bundle bundle = new Bundle();
         Intent intent = new Intent(getContext(), RecipeActivity.class);
         bundle.putInt(RecipeActivity.RECIPE_KEY, recipeId);

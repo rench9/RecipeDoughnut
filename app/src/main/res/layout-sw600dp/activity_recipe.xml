@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/shade0"
+    android:tag="tablet"
+    tools:context=".ui.activity.RecipeActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="@dimen/elevation0">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/tbPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize" />
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <fragment
+            android:id="@+id/flContainer"
+            android:name="com.r4hu7.recipedoughnut.ui.fragment.RecipeFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:tag="RECIPE_FRAG" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:alpha="0.2"
+            android:background="@color/shade8" />
+
+        <fragment
+            android:id="@+id/flContainerSecondary"
+            android:name="com.r4hu7.recipedoughnut.ui.fragment.RecipeStepsFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:tag="RECIPE_STEPS_FRAG" />
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

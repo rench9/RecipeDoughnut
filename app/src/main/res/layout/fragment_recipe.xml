@@ -1,41 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <variable
-            name="recipe"
-            type="com.r4hu7.recipedoughnut.data.remote.response.model.Recipe" />
+            name="vm"
+            type="com.r4hu7.recipedoughnut.ui.vm.RecipeViewModel" />
     </data>
 
-    <ScrollView
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            tools:context=".ui.fragment.RecipeFragment">
+            android:layout_height="wrap_content">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvIngredientsContainer"
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tlPrimary"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:orientation="horizontal"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+                android:layout_height="48dp"
+                app:tabGravity="fill"
+                app:tabIndicatorHeight="1dp"
+                app:tabMode="fixed" />
+        </android.support.design.widget.AppBarLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvStepsContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                android:orientation="vertical"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
-
-        </LinearLayout>
-    </ScrollView>
+        <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/vpContainer"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/unit0"
+            android:layout_weight="1" />
+    </LinearLayout>
 </layout>
