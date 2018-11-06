@@ -31,6 +31,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class RecipeStepsFragment extends Fragment {
+
+    static String KEY_CURRENT_WINDOW = "KEY_CURRENT_WINDOW";
+    static String KEY_PLAYBACK_POSITION = "KEY_PLAYBACK_POSITION";
+    static String KEY_PLAY_WHEN_READY = "KEY_PLAY_WHEN_READY";
+
     SnapHelper snapHelper;
 
     private RecipeStepsViewModel mViewModel;
@@ -56,6 +61,11 @@ public class RecipeStepsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(RecipeStepsViewModel.class);
+        if (savedInstanceState != null) {
+            mViewModel.playbackPosition = savedInstanceState.getLong(KEY_PLAYBACK_POSITION);
+            mViewModel.playWhenReady = savedInstanceState.getBoolean(KEY_PLAY_WHEN_READY);
+            mViewModel.currentWindow = savedInstanceState.getInt(KEY_CURRENT_WINDOW);
+        }
         if (getActivity() instanceof StepsNavigator)
             stepsNavigator = new WeakReference<>((StepsNavigator) getActivity());
         else
@@ -88,6 +98,8 @@ public class RecipeStepsFragment extends Fragment {
                 binding.setRecipeDescription(stepsNavigator.get().getRecipe().get().getSteps().get(stepIndex.get()).getShortDescription());
             }
         });
+        if (stepsNavigator.get().getSelectedStep().get() > 0)
+            rvStepsContainer.scrollToPosition(stepsNavigator.get().getSelectedStep().get());
     }
 
     private int getSnapPosition(SnapHelper snapHelper, RecyclerView recyclerView) {
@@ -119,4 +131,15 @@ public class RecipeStepsFragment extends Fragment {
         super.onPause();
         adapter.releasePlayer((StepAdapter.ViewHolder) rvStepsContainer.findViewHolderForAdapterPosition(getSnapPosition(snapHelper, rvStepsContainer)));
     }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+
+        outState.putInt(KEY_CURRENT_WINDOW, mViewModel.currentWindow);
+        outState.putLong(KEY_PLAYBACK_POSITION, mViewModel.playbackPosition);
+        outState.putBoolean(KEY_PLAY_WHEN_READY, mViewModel.playWhenReady);
+        super.onSaveInstanceState(outState);
+    }
+
+
 }
