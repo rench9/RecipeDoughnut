@@ -6,6 +6,7 @@
     tools:context=".ui.activity.LandingActivity">
 
     <fragment
+        android:tag="RECIPE_LIST"
         android:id="@+id/flContainer"
         android:name="com.r4hu7.recipedoughnut.ui.fragment.RecipeListFragment"
         android:layout_width="match_parent"

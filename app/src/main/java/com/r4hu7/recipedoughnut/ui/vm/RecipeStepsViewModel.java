@@ -28,10 +28,12 @@ public class RecipeStepsViewModel extends ViewModel {
     private ObservableList<Step> steps = new ObservableArrayList<>();
     private ObservableInt stepIndex = new ObservableInt();
 
-    public RecipeStepsViewModel(int recipeId, RecipeRepository recipeRepository) {
-        this.recipeId = recipeId;
-        this.repository = recipeRepository;
-        loadSteps();
+
+    public int currentWindow;
+    public long playbackPosition;
+    public boolean playWhenReady = true;
+
+    public RecipeStepsViewModel() {
     }
 
     @BindingAdapter("videoSrc")

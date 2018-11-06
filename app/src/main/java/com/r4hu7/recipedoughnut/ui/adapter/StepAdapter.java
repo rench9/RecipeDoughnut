@@ -17,6 +17,7 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.r4hu7.recipedoughnut.R;
 import com.r4hu7.recipedoughnut.data.remote.response.model.Step;
 import com.r4hu7.recipedoughnut.databinding.AdapterRecipeStepBinding;
+import com.r4hu7.recipedoughnut.ui.vm.RecipeStepsViewModel;
 
 import java.util.ArrayList;
 
@@ -25,9 +26,11 @@ import butterknife.ButterKnife;
 
 public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
     private ArrayList<Step> steps;
+    private RecipeStepsViewModel viewModel;
 
-    public StepAdapter(ArrayList<Step> steps) {
+    public StepAdapter(ArrayList<Step> steps, RecipeStepsViewModel viewModel) {
         this.steps = steps;
+        this.viewModel = viewModel;
     }
 
     public void setSteps(ArrayList<Step> steps) {
@@ -47,12 +50,12 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
         viewHolder.setStep(steps.get(i));
         if (steps.get(i).haveVideo()) {
             viewHolder.player = ExoPlayerFactory.newSimpleInstance(viewHolder.binding.getRoot().getContext(), new DefaultTrackSelector());
-            viewHolder.player.setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT);
-            viewHolder.playerView.setPlayer(viewHolder.player);
-            viewHolder.player.setPlayWhenReady(viewHolder.playWhenReady);
-            viewHolder.player.seekTo(viewHolder.currentWindow, viewHolder.playbackPosition);
             Uri uri = Uri.parse(viewHolder.binding.getStep().getVideoURL());
             viewHolder.player.prepare(buildMediaSource(uri), true, false);
+            viewHolder.player.setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT);
+            viewHolder.playerView.setPlayer(viewHolder.player);
+            viewHolder.player.setPlayWhenReady(viewModel.playWhenReady);
+            viewHolder.player.seekTo(viewModel.playbackPosition);
         }
     }
 
@@ -77,9 +80,9 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
 
     public void releasePlayer(ViewHolder viewHolder) {
         if (viewHolder.player != null) {
-            viewHolder.playbackPosition = viewHolder.player.getCurrentPosition();
-            viewHolder.currentWindow = viewHolder.player.getCurrentWindowIndex();
-            viewHolder.playWhenReady = viewHolder.player.getPlayWhenReady();
+            viewModel.playbackPosition = viewHolder.player.getCurrentPosition();
+            viewModel.currentWindow = viewHolder.player.getCurrentWindowIndex();
+            viewModel.playWhenReady = viewHolder.player.getPlayWhenReady();
             viewHolder.player.release();
             viewHolder.player = null;
         }
@@ -102,9 +105,6 @@ public class StepAdapter extends RecyclerView.Adapter<StepAdapter.ViewHolder> {
         @BindView(R.id.pvPrimary)
         PlayerView playerView;
         private AdapterRecipeStepBinding binding;
-        private int currentWindow;
-        private long playbackPosition;
-        private boolean playWhenReady = true;
 
         ViewHolder(@NonNull AdapterRecipeStepBinding binding) {
             super(binding.getRoot());

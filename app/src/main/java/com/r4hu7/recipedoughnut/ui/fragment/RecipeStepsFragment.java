@@ -1,5 +1,6 @@
 package com.r4hu7.recipedoughnut.ui.fragment;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.databinding.Observable;
 import android.databinding.ObservableField;
@@ -54,6 +55,7 @@ public class RecipeStepsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mViewModel = ViewModelProviders.of(this).get(RecipeStepsViewModel.class);
         if (getActivity() instanceof StepsNavigator)
             stepsNavigator = new WeakReference<>((StepsNavigator) getActivity());
         else
@@ -68,7 +70,7 @@ public class RecipeStepsFragment extends Fragment {
             adapter = new StepAdapter(
                     stepsNavigator.get().getRecipe().get() != null ?
                             stepsNavigator.get().getRecipe().get().getSteps() :
-                            new ArrayList<>());
+                            new ArrayList<>(), mViewModel);
         }
         stepsNavigator.get().getRecipe().addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
@@ -94,7 +96,11 @@ public class RecipeStepsFragment extends Fragment {
     }
 
     private void initRecyclerView() {
-        rvStepsContainer.setAdapter(adapter);
+        if (rvStepsContainer.getAdapter() == null) {
+            rvStepsContainer.setAdapter(adapter);
+//            if (stepsNavigator.get().getSelectedStep().get() > 0)
+//                rvStepsContainer.scrollToPosition(stepsNavigator.get().getSelectedStep().get());
+        }
         snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(rvStepsContainer);
         rvStepsContainer.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -105,8 +111,7 @@ public class RecipeStepsFragment extends Fragment {
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });
-        if (stepsNavigator.get().getSelectedStep().get() > 0)
-            rvStepsContainer.scrollToPosition(stepsNavigator.get().getSelectedStep().get());
+
     }
 
     @Override
